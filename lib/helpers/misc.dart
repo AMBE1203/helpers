@@ -112,12 +112,12 @@ class Misc {
   }
 
   static Future<Uint8List> widgetToImageBytes({
+    required BuildContext context,
     required Widget child,
     Size? size,
     double? pixelRatio,
     ui.ImageByteFormat format = ui.ImageByteFormat.png,
     Duration delay = Duration.zero,
-    BuildContext? context,
   }) async {
     final RenderRepaintBoundary repaintBoundary = RenderRepaintBoundary();
     final PipelineOwner pipelineOwner = PipelineOwner();
@@ -126,9 +126,11 @@ class Misc {
     final RenderView renderView = RenderView(
       child: RenderPositionedBox(child: repaintBoundary),
       configuration: ViewConfiguration(
-        size: logicalSize,
+        logicalConstraints: BoxConstraints(
+            maxWidth: logicalSize.width, maxHeight: logicalSize.height),
         devicePixelRatio: pixelRatio ?? 1.0,
       ),
+      view: View.of(context),
     );
 
     int retryCounter = 3;
